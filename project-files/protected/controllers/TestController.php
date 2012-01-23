@@ -6,9 +6,22 @@ class TestController extends Controller {
         
     }
     
-    public function actionDan()
+    public function actionDan($numPlayers)
     {
-        $this->render('/pages/main');
+        $totalCards = 30;
+        $deck = Cards::createDeck();
+        if ($numPlayers < 2 || $numPlayers > 4) {
+            echo "Too many or too few players.";
+            exit;
+        }
+        $subtractCards = $numPlayers;
+        if ($numPlayers == 4)
+            $subtractCards = 2;
+        $numCards = $totalCards - $subtractCards;
+        $hands = Cards::handOutCards($deck, $numCards , $numPlayers);
+//        var_dump($deck); exit;
+        $this->render('/pages/gameBoard', 
+                array('deck'=>$deck, 'hands'=>$hands, 'numPlayers'=>$numPlayers));
     }
     
     public function actionDan2()
