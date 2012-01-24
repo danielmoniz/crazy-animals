@@ -83,11 +83,13 @@ $animals = array("Lion", "Leopard", "Elephant", "Rhino", "Zebra");
 <script type="text/javascript">
     var phase = "playcard"; // turn starts with a player drawing a card
     var players = "<?php echo $numPlayers; ?>";
+    var baseAnimals = <?php json_encode($animals); ?>; // initial animals
+    console.log(animals);
     var currentPlayer = 1;
+    var gameEnd = false;
 
     // determine player hands
     var hands = <?php echo $hands; ?>;
-//    console.log(hands[0][0]);
     startTurn(currentPlayer, hands); // begin first turn
     
     $(document).ready(function() {
@@ -96,7 +98,14 @@ $animals = array("Lion", "Leopard", "Elephant", "Rhino", "Zebra");
                 var card = $(this);
                 var animal = $(this).attr("animal");
                 card.remove(); // delete card from hand
+                
+                var relevantCards = $(".playedCards .row[animal=" + animal + "]").children(".card");
+                relevantCards.removeClass("currentCard");
+                card.addClass("currentCard");
                 card.appendTo($(".playedCards .row[animal=" + animal + "]"));
+                if (relevantCards.length + 1>= 6) { // ie. were 5 cards, now 6
+                    gameEnd = true;
+                }
                 phase = "takefigure";
             }
         });
@@ -106,21 +115,17 @@ $animals = array("Lion", "Leopard", "Elephant", "Rhino", "Zebra");
                 $(this).remove(); // delete figure from available animals section
                 
                 $(this).appendTo($(".poachedAnimals .row[player=" + currentPlayer + "]"));
-                nextTurn();
-                phase = "playcard";
+                if (!gameEnd) {
+                    nextTurn();
+                    phase = "playcard";
+                } else {
+                    endGame();
+                }
             }
         });
     });
     
     function startTurn(playerNum, hands) {
-//        console.log(currentPlayer, 'test');
-//        $(".playerHand .cards").empty();
-//        console.log("pre-each");
-//        console.log(hands[playerNum-1]);
-//        $.each(hands[playerNum-1], function(index, card) {
-//            $(".playerHand .cards").append(card);
-//        });
-//        console.log("post-each");
         $(".playerHand[player=" + currentPlayer + "]").show();
     }
     
@@ -131,7 +136,33 @@ $animals = array("Lion", "Leopard", "Elephant", "Rhino", "Zebra");
         startTurn(currentPlayer, hands);
     }
     
+    function endGame() {
+        phase = "gameover";
+        countScore();
+        // count score and declare players' points
+        alert('game over!');
+    }
+    
     function getNewPlayerNum(currentPlayerNum, players) {
         return ((currentPlayerNum) % players) + 1;
+    }
+    
+    // Note: need to account for zero cards being in a given row!
+    function countScore() {
+        var scoreCards = $(".playedCards .card.currentCard");
+        var scoreMultipliers = new Array();
+        $.each(scoreCards, function(index, card) {
+            card = $(card);
+//            scoreMultipliers.push({ animal:card.attr("animal"), price:card.attr("price") });
+//            console.log(card.attr("animal"), card.attr("price"));
+            scoreMultipliers[card.attr("animal")] = card.attr("price");
+        });
+        console.log(scoreMultipliers['Lion'], scoreMultipliers['Zebra']);
+        
+        var score = new Array();
+        $.each($(".poachedAnimals .row"), function(player, animals) {
+            console.log(animals);
+            
+        });
     }
 </script>
