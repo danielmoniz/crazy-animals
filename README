@@ -1,6 +1,8 @@
 This project is a recreation the game Botswana (http://boardgamegeek.com/boardgame/398/botswana). 
 It is made with basic HTML and Javascript on the front-end, and PHP (using the Yii framework) on the back-end. 
-MySQL is used to save the 
+MySQL is used to save the result of a match.
+
+Note that this game is built off a partially built application. It therefore has files 
 
 It's spec includes:
 - ability to play the game online with others
@@ -11,3 +13,15 @@ It's spec includes:
 Possible spec expansions include:
 - player rankings (ELO)
 - entire games saved (ie. replays possible)
+
+Important directory structure:
+- profile-files - self-explanatory. Where all of the code is that users build.
+- project-files/protected/config/main.php - The config file that determines URL routing, MySQL information, etc. 
+      - for this reason, main.php is not included in the repository. main.sample.php exists as a template. 
+      - Feel free to notify me if you believe that main.sample.php is out of date. I will do my best to update it.
+- project-files/protected/controllers - The location of the controllers. These call the models for 
+      data storage/retrieval, and they call the views to render the game.
+- project-files/protected/models - These include classes for object-oriented programming (eg. class Card), 
+      as well as functions for storing and retrieving data.
+- project-files/protected/views - These render the data sent through a controller. They hold HTML, 
+      javascript, and often PHP to aid with any logic required in rendering HTML.
