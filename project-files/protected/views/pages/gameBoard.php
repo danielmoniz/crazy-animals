@@ -83,13 +83,11 @@ $animals = array("Lion", "Leopard", "Elephant", "Rhino", "Zebra");
 <script type="text/javascript">
     var phase = "playcard"; // turn starts with a player drawing a card
     var players = "<?php echo $numPlayers; ?>";
-    var baseAnimals = <?php json_encode($animals); ?>; // initial animals
-    console.log(animals);
+    var animals = <?php echo json_encode($animals); ?>; // initial animals
     var currentPlayer = 1;
     var gameEnd = false;
 
-    // determine player hands
-    var hands = <?php echo $hands; ?>;
+    var hands = <?php echo $hands; ?>; // determine player hands
     startTurn(currentPlayer, hands); // begin first turn
     
     $(document).ready(function() {
@@ -151,18 +149,22 @@ $animals = array("Lion", "Leopard", "Elephant", "Rhino", "Zebra");
     function countScore() {
         var scoreCards = $(".playedCards .card.currentCard");
         var scoreMultipliers = new Array();
-        $.each(scoreCards, function(index, card) {
-            card = $(card);
+        $.each(animals, function(index, animal) {
+            animalValue = scoreCards.filter("[animal=" + animal + "]").attr("price");
+            if (animalValue == undefined)
+                animalValue = 0;
+            console.log(animalValue);
+            scoreMultipliers[animal] = animalValue;
 //            scoreMultipliers.push({ animal:card.attr("animal"), price:card.attr("price") });
 //            console.log(card.attr("animal"), card.attr("price"));
-            scoreMultipliers[card.attr("animal")] = card.attr("price");
+//            scoreMultipliers[card.attr("animal")] = card.attr("price");
         });
         console.log(scoreMultipliers['Lion'], scoreMultipliers['Zebra']);
         
         var score = new Array();
-        $.each($(".poachedAnimals .row"), function(player, animals) {
-            console.log(animals);
-            
-        });
+//        $.each($(".poachedAnimals .row"), function(player, animals) {
+//            console.log(animals);
+//            
+//        });
     }
 </script>
