@@ -149,6 +149,7 @@ $animals = array("Lion", "Leopard", "Elephant", "Rhino", "Zebra");
     function countScore() {
         var scoreCards = $(".playedCards .card.currentCard");
         var scoreMultipliers = new Array();
+        var winner = 3; // the plaer number that wins; default to 3 for testing
         $.each(animals, function(index, animal) {
             animalValue = scoreCards.filter("[animal=" + animal + "]").attr("price");
             if (animalValue == undefined)
@@ -162,9 +163,11 @@ $animals = array("Lion", "Leopard", "Elephant", "Rhino", "Zebra");
         console.log(scoreMultipliers['Lion'], scoreMultipliers['Zebra']);
         
         var score = new Array();
-//        $.each($(".poachedAnimals .row"), function(player, animals) {
-//            console.log(animals);
-//            
-//        });
+        $.each($(".poachedAnimals .row"), function(player, animalSet) {
+            console.log(animals);
+            $.each(animalSet, function(index, animal) {
+                
+            });
+        });
     }
 </script>
