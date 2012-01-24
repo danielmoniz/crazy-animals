@@ -9,17 +9,26 @@ class TestController extends Controller {
     public function actionDan($numPlayers)
     {
         $totalCards = 30;
-        $deck = Cards::createDeck();
-        if ($numPlayers < 2 || $numPlayers > 4) {
-            echo "Too many or too few players.";
-            exit;
-        }
         $subtractCards = $numPlayers;
         if ($numPlayers == 4)
             $subtractCards = 2;
         $numCards = $totalCards - $subtractCards;
-        $hands = Cards::handOutCards($deck, $numCards , $numPlayers);
-//        var_dump($deck); exit;
+        
+        if ($numPlayers < 2 || $numPlayers > 4) {
+            echo "Too many or too few players.";
+            exit;
+        }
+        
+        $cards = Cards::createDeck($numPlayers, $subtractCards);
+        $deck = array();
+        foreach ($cards as $card) {
+            $deck[] = $this->renderPartial('/gamePieces/card', 
+                    array('card'=>$card), true);
+        }
+
+        $hands = Cards::handOutCards($deck, $numCards, $numPlayers);
+
+        
         $this->render('/pages/gameBoard', 
                 array('deck'=>$deck, 'hands'=>$hands, 'numPlayers'=>$numPlayers));
     }

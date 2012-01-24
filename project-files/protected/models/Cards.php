@@ -5,7 +5,7 @@
  */
 class Cards extends CComponent {
     
-    public function createDeck($numPlayers = 3) {
+    public function createDeck($numPlayers = 3, $subtractCards = 2) {
         $animals = array("Lion", "Leopard", "Elephant", "Rhino", "Zebra");
         $deck = array();
         foreach ($animals as $animal) {
@@ -14,7 +14,7 @@ class Cards extends CComponent {
             }
         }
         
-        $discards = array_rand($deck, $numPlayers);
+        $discards = array_rand($deck, $subtractCards);
         foreach ($discards as $discard) {
             array_splice($deck, $discard, 1);
         }
@@ -24,8 +24,9 @@ class Cards extends CComponent {
         return $deck;
     }
     
-    public function handOutCards($deck, $totalCards, $numPlayers = 3) {
-        return array_chunk($deck, $totalCards/$numPlayers);
+    public function handOutCards($deck, $numCards, $numPlayers = 3) {
+//        var_dump(sizeof($deck), $numCards, $numPlayers, $numCards/$numPlayers); exit;
+        return array_chunk($deck, $numCards/$numPlayers);
     }
 }
 
