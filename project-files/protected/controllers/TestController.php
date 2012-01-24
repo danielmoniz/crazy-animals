@@ -6,6 +6,14 @@ class TestController extends Controller {
         
     }
     
+    /**
+     * @TODO Move this to a properly named controller and action.
+     * This controller grabs the number of players from the 
+     * URL and establishes a deck and set of hands to play with. 
+     * It then calls the correct subviews and sends them to the 
+     * pages/gameBoard view.
+     * @TODO Add a default number of players.
+     */
     public function actionDan($numPlayers)
     {
         $totalCards = 30;
