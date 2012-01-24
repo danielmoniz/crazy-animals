@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The class describing the Card object.
+ * The class describing the Card object. Each card has an animal and a value.
  */
 class Card extends CComponent {
     public $animal;
