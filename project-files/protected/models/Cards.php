@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The model that deals with Card objects.
+ * The model that deals with collections of Card objects.
  */
 class Cards extends CComponent {
     
