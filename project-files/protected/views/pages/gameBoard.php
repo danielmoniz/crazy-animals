@@ -21,7 +21,7 @@ $animals = array("Lion", "Leopard", "Elephant", "Rhino", "Zebra");
     <?php foreach ($animals as $animal): ?>
         <div class="row" animal="<?php echo $animal; ?>">
             <?php for ($i = 0; $i < 5; $i++): ?>
-                <img class="animal" type="<?php echo $animal; ?>" src="/images/<?php echo $animal; ?>01.jpg" width="100" height="100" />
+                <img class="animal" animal="<?php echo $animal; ?>" src="/images/<?php echo $animal; ?>01.jpg" width="100" height="100" />
             <?php endfor; ?>
         </div>
     <?php endforeach; ?>
@@ -136,38 +136,47 @@ $animals = array("Lion", "Leopard", "Elephant", "Rhino", "Zebra");
     
     function endGame() {
         phase = "gameover";
-        countScore();
-        // count score and declare players' points
-        alert('game over!');
+        scoreData = countScore();
+        alert("Game over. Player " + (scoreData.winner + 1) + " wins! (" + scoreData.winValue + " points)");
     }
     
     function getNewPlayerNum(currentPlayerNum, players) {
         return ((currentPlayerNum) % players) + 1;
     }
     
-    // Note: need to account for zero cards being in a given row!
     function countScore() {
         var scoreCards = $(".playedCards .card.currentCard");
         var scoreMultipliers = new Array();
-        var winner = 3; // the plaer number that wins; default to 3 for testing
+        var winner = 0; // the plaer number that wins; default to 0 for testing
+        var winValue = 0;
+        
         $.each(animals, function(index, animal) {
             animalValue = scoreCards.filter("[animal=" + animal + "]").attr("price");
             if (animalValue == undefined)
                 animalValue = 0;
-            console.log(animalValue);
-            scoreMultipliers[animal] = animalValue;
-//            scoreMultipliers.push({ animal:card.attr("animal"), price:card.attr("price") });
-//            console.log(card.attr("animal"), card.attr("price"));
-//            scoreMultipliers[card.attr("animal")] = card.attr("price");
+            scoreMultipliers[animal] = parseInt(animalValue);
         });
-        console.log(scoreMultipliers['Lion'], scoreMultipliers['Zebra']);
+        console.log(scoreMultipliers['Lion'], scoreMultipliers['Leopard'], scoreMultipliers['Elephant'], scoreMultipliers['Rhino'], scoreMultipliers['Zebra']);
         
         var score = new Array();
-        $.each($(".poachedAnimals .row"), function(player, animalSet) {
-            console.log(animals);
+        $.each($(".poachedAnimals .row"), function(player, animalRow) {
+//            console.log(animalRow);
+            var animalSet = $(animalRow).find(".animal");
+            var playerNum = player + 1; // player starts at 0
+            score[player] = 0; // initialize player's score
+            
             $.each(animalSet, function(index, animal) {
-                
+                var animalName = $(animal).attr("animal");
+                score[player] += scoreMultipliers[animalName];
             });
+            // calculate winner along the way
+            if (score[player] > winValue) {
+                winner = player;
+                winValue = score[player];
+            }
         });
+        console.log(score);
+        return { score:score, winner:winner, winValue:winValue };
+        
     }
 </script>
