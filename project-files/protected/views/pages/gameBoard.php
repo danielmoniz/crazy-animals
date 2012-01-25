@@ -55,29 +55,8 @@ $animals = array("Lion", "Leopard", "Elephant", "Rhino", "Zebra");
             echo $hand;
         } ?>
     </div>
-    <?php //foreach ($hands[0] as $card): ?>
-<!--        <div class="card" animal="<?php //echo $card->animal; ?>" 
-            price="<?php //echo $card->value; ?>" >
-            <div class="cardImage">
-                <img class="animal" animal="<?php //echo $card->animal; ?>" 
-                     src="/images/<?php //echo $card->animal; ?>01.jpg" 
-                     width="50" height="50" />
-            </div>
-            <div class="cardValue">
-                <?php //echo $card->value; ?>
-            </div>
-        </div>-->
-    <?php //endforeach; ?>
-    
 </div>
 <?php endfor; ?>
-
-<div class="row">
-    <h2>Game Deck</h2>
-    <?php foreach ($deck as $card) {
-        echo $card;
-    } ?>
-</div>
 
 
 <script type="text/javascript">
