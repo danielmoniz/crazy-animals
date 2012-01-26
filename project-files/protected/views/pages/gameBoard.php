@@ -72,7 +72,13 @@ $animals = array("Lion", "Leopard", "Elephant", "Rhino", "Zebra");
             if (phase == "playcard") { // check for correct phase
                 var card = $(this);
                 var animal = $(this).attr("animal");
+                var value = $(this).attr("price");
                 card.remove(); // delete card from hand
+                
+                $.post('/board/playCard', { animal:animal, value:value }, 
+                    function(data) {
+                    console.log(data);
+                });
                 
                 var relevantCards = $(".playedCards .row[animal=" + animal + "]").children(".card");
                 relevantCards.removeClass("currentCard");
@@ -87,6 +93,13 @@ $animals = array("Lion", "Leopard", "Elephant", "Rhino", "Zebra");
         
         $(".remainingFigures img.animal").live("click", function() {
             if (phase == "takefigure") { // check for correct phase
+                var animal = $(this).attr("animal");
+                var ajaxData = { animal:animal, player:currentPlayer };
+                $.post('/board/takeAnimal', ajaxData, 
+                    function(data) {
+                    console.log(data);
+                });
+                
                 $(this).remove(); // delete figure from available animals section
                 
                 $(this).appendTo($(".poachedAnimals .row[player=" + currentPlayer + "]"));
