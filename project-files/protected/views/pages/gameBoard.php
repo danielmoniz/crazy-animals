@@ -2,8 +2,6 @@
 $animals = array("Lion", "Leopard", "Elephant", "Rhino", "Zebra");
 ?>
 
-
-
 <style type="text/css">
     .row { clear:both; height:110px; }
     .column { float: left; margin-left:20px; }
@@ -32,7 +30,7 @@ $animals = array("Lion", "Leopard", "Elephant", "Rhino", "Zebra");
     <h2>Played Cards</h2>
     <?php foreach ($animals as $animal): ?>
         <div class="row" animal="<?php echo $animal; ?>">
-
+            
         </div>
     <?php endforeach; ?>
 </div>

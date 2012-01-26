@@ -95,9 +95,9 @@ class User extends CActiveRecord {
      * Set the user
      */
     private function updateLastLogin() {
-        $sql = "UPDATE user_main 
-            SET last_login_timestamp = UNIX_TIMESTAMP() 
-            WHERE user_id = :userId";
+        $sql = "UPDATE users 
+            SET lastLoginTimestamp = UNIX_TIMESTAMP() 
+            WHERE userId = :userId";
         $paramArray = array(':userId'=>$this->userId);
         return Utilities::query($sql, $paramArray, 'execute');
     }
@@ -111,7 +111,6 @@ class User extends CActiveRecord {
      */
     public function batchMakeUsers($userIdArray) {
         $userArray = array();
-//        var_dump($userIdArray); exit;
         foreach ($userIdArray as $userId) {
             $userArray[] = new User($userId);
         }
@@ -123,7 +122,7 @@ class User extends CActiveRecord {
     }
 
     public function tableName() {
-        return "user_main";
+        return "users";
     }
 
     /**
@@ -176,7 +175,7 @@ class User extends CActiveRecord {
             $username = $this->username;
 
         $connection = Yii::app()->db;
-        $sql = "SELECT * FROM user_main
+        $sql = "SELECT * FROM users
             WHERE username = :username";
 
         $command = $connection->createCommand($sql);
@@ -195,8 +194,8 @@ class User extends CActiveRecord {
         if (empty($userId))
             $userId = $this->userId;
 
-        $sql = "SELECT $attributes FROM user_main
-            WHERE user_id = :userId";
+        $sql = "SELECT $attributes FROM users
+            WHERE userId = :userId";
 
         $paramArray = array(':userId' => $userId);
         return Utilities::query($sql, $paramArray, 'row');
@@ -214,8 +213,8 @@ class User extends CActiveRecord {
         if (empty($userIds))
             return false;
 
-        $sql = "SELECT $attribute FROM user_main
-            WHERE user_id IN (0";
+        $sql = "SELECT $attribute FROM users
+            WHERE userId IN (0";
         $paramArray = array();
         foreach ($userIds as $key=>$userId) {
             $sql .= "," . $userId;
@@ -236,72 +235,11 @@ class User extends CActiveRecord {
         if (empty($userId))
             return false;
 
-        $sql = "SELECT $attribute FROM user_main
-            WHERE user_id = :userId";
+        $sql = "SELECT $attribute FROM users
+            WHERE userId = :userId";
         $paramArray = array(":userId"=>$userId);
         
         return Utilities::query($sql, $paramArray, 'scalar');
-    }
-
-    /*
-     * Returns a list of of User objects of those the user is tracking.
-     * @TODO Can likely combine this with getTrackedByList()
-     * @TODO Look into performance loss with the second join on user_main.
-     * Other option is to pull all users being tracked, and filter the results
-     * in PHP.
-     * @param int $trackerId
-     * @param string $usernameFilter A string on which to filter trackees.
-     * @return array Array of user objects
-     */
-    public function getTrackingList($trackerId = 0, $usernameFilter = '') {
-        if (empty($trackerId))
-            $trackerId = Yii::app()->user->id;
-        $sql = "SELECT trackee_user_id
-            FROM user_tracking t
-            INNER JOIN user_main m ON t.tracker_user_id = m.user_id
-            INNER JOIN user_main m2 ON t.trackee_user_id = m2.user_id
-            WHERE t.tracker_user_id = :trackerId ";
-        if (!empty($usernameFilter))
-            $sql .= " AND m2.username LIKE :usernameFilter";
-
-        $paramArray = array(":trackerId" => $trackerId);
-        if (!empty($usernameFilter))
-            $paramArray[':usernameFilter'] = $usernameFilter . "%";
-        $userIds = Utilities::query($sql, $paramArray, 'column');
-
-        return self::batchMakeUsers($userIds);
-    }
-
-    /*
-     * Returns a list of of User objects of those the user is tracked by.
-     * @return array Array of user objects
-     */
-    /*
-     * Returns a list of of User objects of those who track the user.
-     * @TODO Look into performance loss with the second join on user_main.
-     * Other option is to pull all users being tracked, and filter the results
-     * in PHP.
-     * @param int $trackerId
-     * @param string $usernameFilter A string on which to filter trackers.
-     * @return array Array of user objects
-     */
-    public function getTrackedByList($trackeeId = 0, $usernameFilter = '') {
-        if (empty($trackeeId))
-            $trackeeId = Yii::app()->user->id;
-        $sql = "SELECT tracker_user_id
-            FROM user_tracking t
-            INNER JOIN user_main m ON t.trackee_user_id = m.user_id
-            INNER JOIN user_main m2 ON t.tracker_user_id = m2.user_id
-            WHERE t.trackee_user_id = :trackeeId";
-        if (!empty($usernameFilter))
-            $sql .= " AND m2.username LIKE :usernameFilter";
-
-        $paramArray = array(":trackeeId" => $trackeeId);
-        if (!empty($usernameFilter))
-            $paramArray[':usernameFilter'] = $usernameFilter . "%";
-        $userIds = Utilities::query($sql, $paramArray, 'column');
-
-        return self::batchMakeUsers($userIds);
     }
 
     /*
@@ -312,64 +250,6 @@ class User extends CActiveRecord {
 
     public function changeUserAttribute($attribute, $value) {
         
-    }
-
-    /**
-     * Create a new post authored by this user.
-     * @param string $body The body of the new post
-     */
-    public function createPost($body) {
-        $post = new Post($this->userId, $body);
-        // add to DB
-        // $post->submitPost();
-    }
-
-    /**
-     * A function to make one user track another.
-     * @TODO Consider joining this method with the untrackUser method
-     * @param int $trackeeId The id of the person being tracked.
-     * @param int $trackerId The id of the person doing the tracking.
-     * @return boolean The success or failure of the relevant query.
-     */
-    public function trackUser($trackeeId, $trackerId = 0) {
-        if (empty($trackerId))
-            $trackerId = Yii::app()->user->id;
-
-        $connection = Yii::app()->db;
-        $sql = "INSERT IGNORE INTO user_tracking
-            VALUES (:trackerId, :trackeeId)";
-        $command = $connection->createCommand($sql);
-        $paramArray = array(
-            ':trackeeId' => $trackeeId,
-            ':trackerId' => $trackerId,
-        );
-        $command->bindValues($paramArray);
-
-        return $command->execute();
-    }
-
-    /**
-     * A function to stop one user from tracking another.
-     * @param int $trackeeId The id of the person being tracked.
-     * @param int $trackerId The id of the person doing the tracking.
-     * @return boolean The success or failure of the relevant query.
-     */
-    public function untrackUser($trackeeId, $trackerId = 0) {
-        if (empty($trackerId))
-            $trackerId = Yii::app()->user->id;
-
-        $connection = Yii::app()->db;
-        $sql = "DELETE IGNORE FROM user_tracking
-            WHERE tracker_user_id = :trackerId
-            AND trackee_user_id = :trackeeId";
-        $command = $connection->createCommand($sql);
-        $paramArray = array(
-            ':trackeeId' => $trackeeId,
-            ':trackerId' => $trackerId,
-        );
-        $command->bindValues($paramArray);
-
-        return $command->execute();
     }
 
     /**
@@ -388,7 +268,7 @@ class User extends CActiveRecord {
      */
     public function getUsers($select = '*', $limit = 10, $offset = 0) {
         $connection = Yii::app()->db;
-        $sql = "SELECT $select FROM user_main
+        $sql = "SELECT $select FROM users
             LIMIT :offset, :limit";
         $command = $connection->createCommand($sql);
         $paramArray = array(":limit" => $limit, ":offset" => $offset);
@@ -490,21 +370,21 @@ class User extends CActiveRecord {
       }
      */
     public function registerUser($userRegistrationForm) {
-        $login_code = substr(sha1(uniqid()), 1, 10);
+        $loginCode = substr(sha1(uniqid()), 1, 10);
 
         $connection = Yii::app()->db;
-        $sql = "INSERT INTO user_main(
+        $sql = "INSERT INTO users (
                     username,
                     password,
-                    login_code,
+                    loginCode,
                     email,
-                    registration_timestamp,
-                    last_login_timestamp
+                    registrationTimestamp,
+                    lastLoginTimestamp
                 )
                 VALUES (
                     :username,
                     :password,
-                    :login_code,
+                    :loginCode,
                     :email,
                     UNIX_TIMESTAMP(),
                     UNIX_TIMESTAMP()
@@ -513,7 +393,7 @@ class User extends CActiveRecord {
 
         $command->bindParam(":username", $userRegistrationForm->username, PDO::PARAM_STR);
         $command->bindParam(":password", UserHelper::hashPassword($userRegistrationForm->password), PDO::PARAM_STR);
-        $command->bindParam(":login_code", $login_code, PDO::PARAM_STR);
+        $command->bindParam(":loginCode", $loginCode, PDO::PARAM_STR);
         $command->bindParam(":email", $userRegistrationForm->email, PDO::PARAM_STR);
         $command->execute();
 
@@ -530,15 +410,6 @@ class User extends CActiveRecord {
         else
             return $userId;
     }
-    
-    // dont use
-  /*  public function setNoLeapFrog($userId, $postId) {
-        $sql = "INSERT INTO no_leapfrog_posts (user_id, post_id, timestamp)
-            VALUES (:userId, :postId, UNIX_TIMESTAMP())";
-        $paramArray = array(":userId"=>$userId, ":postId"=>$postId);
-        return Utilities::query($sql, $paramArray, 'execute');
-    }
-    */
 
 }
 ?>
