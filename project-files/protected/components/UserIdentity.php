@@ -59,7 +59,6 @@ class UserIdentity extends CUserIdentity {
             
             $this->setState('userId', $user->userId);
             $this->setState('username', $user->username);
-            $this->setState('postMatcherId', $user->postMatcherId);
 
             $this->errorCode = self::ERROR_NONE;
         }

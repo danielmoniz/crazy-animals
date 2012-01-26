@@ -14,7 +14,7 @@ class TestController extends Controller {
      * pages/gameBoard view.
      * @TODO Add a default number of players.
      */
-    public function actionDan($numPlayers)
+    public function actionDan($numPlayers = 2)
     {
         $totalCards = 30;
         $subtractCards = $numPlayers;

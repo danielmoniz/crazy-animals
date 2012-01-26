@@ -8,7 +8,7 @@ class WebUser extends CWebUser {
   // access it by Yii::app()->user->first_name
   function getFirst_Name(){
     $user = $this->loadUser(Yii::app()->user->id);
-    return $user->first_name;
+    return $user->firstName;
   }
  
   // This is a function that checks the field 'role'
@@ -33,7 +33,7 @@ class WebUser extends CWebUser {
     
     /**
      * Override CWebUser's changeIdentity() function.
-     * Update the yii_session table with the user's id.
+     * Update the yiiSession table with the user's id.
      */
     protected function changeIdentity($id,$name,$states)
     {
@@ -41,7 +41,7 @@ class WebUser extends CWebUser {
 
         $sessionId = Yii::app()->session->sessionId;
 //            var_dump($id, $sessionId); exit;
-        $sql = "UPDATE yii_session SET user_id = $id WHERE id = '$sessionId'";
+        $sql = "UPDATE yiiSession SET userId = $id WHERE id = '$sessionId'";
 //            var_dump(Utilities::query($sql, array(), 'execute')); exit;
         return Utilities::query($sql, array(), 'execute');
     }

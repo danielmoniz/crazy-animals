@@ -4,7 +4,7 @@ class User extends CActiveRecord {
     /*
      * Instance Variables.
      * @TODO Figure out how to deal with CActiveRecord wanting
-     * a user_id attribute. (currently redundant $userId and $user_id!)
+     * a userId attribute. (currently redundant $userId and $userId!)
      * NOTE: Every changed instance variable requires changes in the
      * constructor and getAttributes.
      */
@@ -38,9 +38,9 @@ class User extends CActiveRecord {
         $this->firstName = $userData['firstName'];
         $this->lastName = $userData['lastName'];
         $this->email = $userData['email'];
-        $this->lastLoginTimestamp = $userData['last_loginTimestamp'];
+        $this->lastLoginTimestamp = $userData['lastLoginTimestamp'];
         $this->registeredTimestamp = $userData['registrationTimestamp'];
-        $this->avatarFilename = $userData['avatarTilename'];
+        $this->avatarFilename = $userData['avatarFilename'];
         $this->active = $userData['active'];
     }
     
@@ -87,7 +87,7 @@ class User extends CActiveRecord {
             if (property_exists('User', $attribute))
                 $this->$attribute = $value;
         }
-        $this->user_id = $this->userId;
+        $this->userId = $this->userId;
         return true;
     }
     

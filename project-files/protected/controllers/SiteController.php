@@ -166,7 +166,7 @@ class SiteController extends Controller
                 $user->postLogin();
                 if (Yii::app()->user->returnUrl == '/index.php')
                 {
-                    $this->redirect($this->createUrl('/feed/home'));
+                    $this->redirect($this->createUrl('/test/dan'));
                 }
                 else
                 {

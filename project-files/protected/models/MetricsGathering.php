@@ -13,9 +13,9 @@ class MetricsGathering {
      */
     public function getUsernamesOnline() {
         $sql = "SELECT SQL_CALC_FOUND_ROWS 
-                user_id FROM yii_session
+                userId FROM yiiSession
             WHERE expire >= UNIX_TIMESTAMP()
-            AND user_id IS NOT NULL";
+            AND userId IS NOT NULL";
         $userIds = Utilities::query($sql, array(), 'column');
         
         $usernames = User::getUserAttributeFromUserIds($userIds);
@@ -27,7 +27,7 @@ class MetricsGathering {
      * @return Array A list of rows of data from the session DB table.
      */
     public function getSessionData() {
-        $sql = "SELECT * FROM yii_session
+        $sql = "SELECT * FROM yiiSession
             WHERE expire >= UNIX_TIMESTAMP()
             AND data IS NOT NULL";
         return Utilities::query($sql, array(), 'all');

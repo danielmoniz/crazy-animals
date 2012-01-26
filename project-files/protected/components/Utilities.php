@@ -64,7 +64,6 @@ class Utilities extends CComponent
 
     public function filterList($list, $filterText)
     {
-//        var_dump($list); exit;
         $stringLength = strlen($filterText);
         foreach ($list as $key=>$element) {
             if ($filterText != substr($element, 0, $stringLength))
