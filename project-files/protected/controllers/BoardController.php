@@ -7,13 +7,23 @@ class BoardController extends Controller {
     }
     
     public function actionLounge() {
-        $this->render("/pages/lounge");
+        $games = GameState::getGamesList();
+        $games = array_reverse($games);
+        $gamesBlock = $this->renderPartial("/blocks/gamesList", 
+                array("games"=>$games), true);
+        $this->render("/pages/lounge", array("gamesBlock"=>$gamesBlock));
     }
     
     public function actionLobby($newGame = false, $gameId = null) {
-        $gameId = GameState::startGame();
+        if ($newGame)
+            $gameId = GameState::startGame();
 //        var_dump($newGame, $gameId); exit;
-        $this->render("/pages/lobby", array("newGame"=>$newGame, "gameId"=>$gameId));
+        $players = GameState::getPlayersInGame($gameId);
+        $playerList = $this->renderPartial("/blocks/playerList", 
+                array("players"=>$players), true);
+//        var_dump($newGame, $gameId); exit;
+        $this->render("/pages/lobby", array(
+            "newGame"=>$newGame, "gameId"=>$gameId, "playerList"=>$playerList));
     }
     
     /**
@@ -63,13 +73,23 @@ class BoardController extends Controller {
         var_dump($animal, $player); exit;
     }
     
+    public function actionGetGamesList() {
+        $games = GameState::getGamesList();
+        $games = array_reverse($games);
+//        var_dump($gameId, $players); exit;
+        $gamesList = $this->renderPartial("/blocks/gamesList", 
+                array("games"=>$games), true);
+        echo $gamesList;
+    }
+    
     public function actionGetPlayers() {
         $gameId = $_POST['gameId'];
+//        var_dump($gameId);
         $players = GameState::getPlayersInGame($gameId);
 //        var_dump($gameId, $players); exit;
-        $playerBlock = $this->renderPartial("/blocks/playerList", 
+        $playerList = $this->renderPartial("/blocks/playerList", 
                 array("players"=>$players), true);
-        echo $playerBlock;
+        echo $playerList;
     }
 
     // PERMISSIONS CODE---------------------------------------

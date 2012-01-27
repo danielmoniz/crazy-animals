@@ -29,6 +29,14 @@ class GameState extends CActiveRecord {
         $paramArray = array(":gameId"=>$gameId);
         return Utilities::query($query, $paramArray, "column");
     }
+    
+    public function getGamesList() {
+        $query = "SELECT * FROM games 
+            WHERE complete = FALSE 
+            ORDER BY gameId DESC 
+            LIMIT 10";
+        return Utilities::query($query, array(), "all");
+    }
 
 }
 ?>

@@ -1,6 +1,6 @@
 Waiting for players...
 <div id="players">
-    
+    <?php echo $playerList; ?>
 </div>
 <form id="lobby" action="/board/play">
     <input type="submit" value="Start game!" />
