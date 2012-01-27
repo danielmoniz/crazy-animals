@@ -77,7 +77,7 @@ $animals = array("Lion", "Leopard", "Elephant", "Rhino", "Zebra");
                 
                 $.post('/board/playCard', { animal:animal, value:value }, 
                     function(data) {
-                    console.log(data);
+//                    console.log(data);
                 });
                 
                 var relevantCards = $(".playedCards .row[animal=" + animal + "]").children(".card");
@@ -97,7 +97,7 @@ $animals = array("Lion", "Leopard", "Elephant", "Rhino", "Zebra");
                 var ajaxData = { animal:animal, player:currentPlayer };
                 $.post('/board/takeAnimal', ajaxData, 
                     function(data) {
-                    console.log(data);
+//                    console.log(data);
                 });
                 
                 $(this).remove(); // delete figure from available animals section
